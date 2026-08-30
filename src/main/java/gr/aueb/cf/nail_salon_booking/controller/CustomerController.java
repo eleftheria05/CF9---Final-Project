@@ -31,10 +31,10 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
-    @PostMapping
+   /* @PostMapping
     public ResponseEntity<CustomerResponseDTO> createCustomer(@Valid @RequestBody CustomerRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(dto));
-    }
+    }*/
 
     @PutMapping("/{id}")
     public ResponseEntity<CustomerResponseDTO> updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerRequestDTO dto) {

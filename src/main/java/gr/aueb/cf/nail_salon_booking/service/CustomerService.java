@@ -35,14 +35,14 @@ public class CustomerService {
         return mapper.toResponseDTO(entity);
     }
 
-    public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
+    /*public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
         if (customerRepository.existsByEmail(dto.getEmail())) {
             throw new DuplicateResourceException("Email already in use: " + dto.getEmail());
         }
         Customer entity = mapper.toEntity(dto);
         Customer saved = customerRepository.save(entity);
         return mapper.toResponseDTO(saved);
-    }
+    }*/
 
     public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto) {
         Customer existing = findEntityById(id);
