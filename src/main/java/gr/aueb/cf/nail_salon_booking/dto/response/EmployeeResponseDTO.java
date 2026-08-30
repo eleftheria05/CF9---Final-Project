@@ -1,5 +1,6 @@
 package gr.aueb.cf.nail_salon_booking.dto.response;
 
+import gr.aueb.cf.nail_salon_booking.dto.response.SalonResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,5 @@ public class EmployeeResponseDTO {
     private String specialization;
     private LocalDate hireDate;
     private Boolean isActive;
+    private SalonResponseDTO salon;
 }

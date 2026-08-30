@@ -40,4 +40,8 @@ public class Employee {
 
     @Column(nullable = false)
     private Boolean isActive;
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id", nullable = false)
+    private Salon salon;
 }

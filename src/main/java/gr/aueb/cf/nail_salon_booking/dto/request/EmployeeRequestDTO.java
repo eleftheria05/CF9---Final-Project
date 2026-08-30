@@ -39,4 +39,7 @@ public class EmployeeRequestDTO {
 
     @NotNull(message = "Hire date is required")
     private LocalDate hireDate;
+
+    @NotNull(message = "Salon is required")
+    private Long salonId;
 }

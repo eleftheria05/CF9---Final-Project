@@ -8,4 +8,5 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     boolean existsByEmail(String email);
     List<Employee> findByIsActiveTrue();
+    List<Employee> findBySalon_Id(Long salonId);
 }

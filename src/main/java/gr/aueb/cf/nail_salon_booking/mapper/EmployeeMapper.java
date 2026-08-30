@@ -8,6 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmployeeMapper {
 
+    private final SalonMapper salonMapper;
+
+    public EmployeeMapper(SalonMapper salonMapper) {
+        this.salonMapper = salonMapper;
+    }
+
     public EmployeeResponseDTO toResponseDTO(Employee entity) {
         EmployeeResponseDTO dto = new EmployeeResponseDTO();
         dto.setId(entity.getId());
@@ -18,6 +24,7 @@ public class EmployeeMapper {
         dto.setSpecialization(entity.getSpecialization());
         dto.setHireDate(entity.getHireDate());
         dto.setIsActive(entity.getIsActive());
+        dto.setSalon(salonMapper.toResponseDTO(entity.getSalon()));
         return dto;
     }
 
