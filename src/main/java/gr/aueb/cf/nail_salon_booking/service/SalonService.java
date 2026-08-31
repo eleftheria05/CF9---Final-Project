@@ -9,6 +9,7 @@ import gr.aueb.cf.nail_salon_booking.mapper.SalonMapper;
 import gr.aueb.cf.nail_salon_booking.model.Salon;
 import gr.aueb.cf.nail_salon_booking.repository.SalonRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -63,6 +64,7 @@ public class SalonService {
     }
 
     //Deactivate a salon and also deactivate all employees associated with that salon.
+    @Transactional
     public void deleteSalon(Long id) {
         Salon existing = findEntityById(id);
         existing.setIsActive(false);
