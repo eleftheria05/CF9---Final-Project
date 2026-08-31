@@ -8,6 +8,7 @@ import gr.aueb.cf.nail_salon_booking.model.Role;
 import gr.aueb.cf.nail_salon_booking.model.User;
 import gr.aueb.cf.nail_salon_booking.repository.CustomerRepository;
 import gr.aueb.cf.nail_salon_booking.repository.UserRepository;
+import gr.aueb.cf.nail_salon_booking.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +19,13 @@ public class AuthService {
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, CustomerRepository customerRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -45,6 +48,7 @@ public class AuthService {
         customer.setUser(savedUser);
         customerRepository.save(customer);
 
-        return new AuthResponseDTO(null, savedUser.getEmail(), savedUser.getRole().name());
+        String token = jwtService.generateToken(savedUser.getEmail());
+        return new AuthResponseDTO(token, savedUser.getEmail(), savedUser.getRole().name());
     }
 }
