@@ -1,7 +1,9 @@
 package gr.aueb.cf.nail_salon_booking.service;
 
+import gr.aueb.cf.nail_salon_booking.dto.request.LoginRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.request.RegisterRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.AuthResponseDTO;
+import gr.aueb.cf.nail_salon_booking.exception.BadCredentialsException;
 import gr.aueb.cf.nail_salon_booking.exception.DuplicateResourceException;
 import gr.aueb.cf.nail_salon_booking.model.Customer;
 import gr.aueb.cf.nail_salon_booking.model.Role;
@@ -50,5 +52,17 @@ public class AuthService {
 
         String token = jwtService.generateToken(savedUser.getEmail());
         return new AuthResponseDTO(token, savedUser.getEmail(), savedUser.getRole().name());
+    }
+
+    public AuthResponseDTO login(LoginRequestDTO dto) {
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Invalid email or password");
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
+        return new AuthResponseDTO(token, user.getEmail(), user.getRole().name());
     }
 }

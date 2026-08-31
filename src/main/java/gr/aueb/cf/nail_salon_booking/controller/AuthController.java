@@ -1,5 +1,6 @@
 package gr.aueb.cf.nail_salon_booking.controller;
 
+import gr.aueb.cf.nail_salon_booking.dto.request.LoginRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.request.RegisterRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.AuthResponseDTO;
 import gr.aueb.cf.nail_salon_booking.service.AuthService;
@@ -24,5 +25,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(dto));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
+        return ResponseEntity.ok(authService.login(dto));
     }
 }
