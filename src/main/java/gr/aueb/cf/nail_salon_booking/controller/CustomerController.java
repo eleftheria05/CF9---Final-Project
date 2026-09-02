@@ -6,6 +6,7 @@ import gr.aueb.cf.nail_salon_booking.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
         List<CustomerResponseDTO> customers = customerService.getAllCustomers();
@@ -41,6 +43,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.updateCustomer(id, dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
