@@ -6,6 +6,7 @@ import gr.aueb.cf.nail_salon_booking.service.ServiceOfferingService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,16 +31,19 @@ public class ServiceOfferingController {
         return ResponseEntity.ok(serviceOfferingService.getServiceById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ServiceOfferingResponseDTO> createService(@Valid @RequestBody ServiceOfferingRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(serviceOfferingService.createService(dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ServiceOfferingResponseDTO> updateService(@PathVariable Long id, @Valid @RequestBody ServiceOfferingRequestDTO dto) {
         return ResponseEntity.ok(serviceOfferingService.updateService(id, dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteService(@PathVariable Long id) {
         serviceOfferingService.deleteService(id);
