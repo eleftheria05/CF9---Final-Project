@@ -2,6 +2,7 @@ package gr.aueb.cf.nail_salon_booking.service;
 
 import gr.aueb.cf.nail_salon_booking.dto.request.AppointmentRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.AppointmentResponseDTO;
+import gr.aueb.cf.nail_salon_booking.exception.AccessDeniedException;
 import gr.aueb.cf.nail_salon_booking.exception.OperationNotAllowedException;
 import gr.aueb.cf.nail_salon_booking.exception.ResourceNotFoundException;
 import gr.aueb.cf.nail_salon_booking.mapper.AppointmentMapper;
@@ -14,6 +15,7 @@ import gr.aueb.cf.nail_salon_booking.repository.AppointmentRepository;
 import gr.aueb.cf.nail_salon_booking.repository.CustomerRepository;
 import gr.aueb.cf.nail_salon_booking.repository.EmployeeRepository;
 import gr.aueb.cf.nail_salon_booking.repository.ServiceOfferingRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,6 +42,8 @@ public class AppointmentService {
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
         Customer customer = customerRepository.findById(dto.getCustomerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + dto.getCustomerId()));
+
+        checkOwnershipOrAdmin(customer);
 
         Employee employee = employeeRepository.findById(dto.getEmployeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + dto.getEmployeeId()));
@@ -92,6 +96,8 @@ public class AppointmentService {
     //Cancel an appointment only if it is not completed or already cancelled.
     public AppointmentResponseDTO cancelAppointment(Long id) {
         Appointment entity = findEntityById(id);
+        checkOwnershipOrAdmin(entity.getCustomer());
+
         if (entity.getStatus() == AppointmentStatus.COMPLETED || entity.getStatus() == AppointmentStatus.CANCELLED) {
             throw new OperationNotAllowedException("Cannot cancel an appointment with status: " + entity.getStatus());
         }
@@ -109,6 +115,17 @@ public class AppointmentService {
         entity.setStatus(AppointmentStatus.COMPLETED);
         Appointment updated = appointmentRepository.save(entity);
         return appointmentMapper.toResponseDTO(updated);
+    }
+
+    private void checkOwnershipOrAdmin(Customer customer) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin && !customer.getEmail().equals(currentUserEmail)) {
+            throw new AccessDeniedException("You are not allowed to perform this action for another customer.");
+        }
     }
 
     private Appointment findEntityById(Long id) {
