@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import { AuthContext } from '../context/AuthContext';
 
@@ -26,30 +26,58 @@ function LoginPage() {
   };
 
   return (
-    <div>
-      <h2>Σύνδεση</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Κωδικός:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Σύνδεση</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-rose-100 px-4">
+      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
+          Σύνδεση
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Κωδικός
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+            />
+          </div>
+
+          {error && (
+            <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg transition-colors"
+          >
+            Σύνδεση
+          </button>
+        </form>
+
+        <p className="text-sm text-gray-500 text-center mt-4">
+          Δεν έχεις λογαριασμό;{' '}
+          <Link to="/register" className="text-pink-600 font-medium hover:underline">
+            Εγγραφή
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
