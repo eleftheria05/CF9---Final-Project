@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<h2 className="text-center mt-10 text-gray-600">Αρχική Σελίδα</h2>} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </div>
   )
