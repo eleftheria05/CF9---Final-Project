@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import MyAppointmentsPage from './pages/MyAppointmentsPage';
 import BookAppointmentPage from './pages/BookAppointmentPage';
 import EmployeeDashboardPage from './pages/EmployeeDashboardPage';
+import AdminServicesPage from './pages/AdminServicesPage';
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
             <ProtectedRoute>
               <EmployeeDashboardPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/services"
+          element={
+          <ProtectedRoute>
+            <AdminServicesPage />
+          </ProtectedRoute>
           }
         />
       </Routes>

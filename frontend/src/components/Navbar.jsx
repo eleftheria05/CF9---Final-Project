@@ -37,6 +37,12 @@ function Navbar() {
               </Link>
             )}
 
+            {role === 'ADMIN' && (
+              <Link to="/admin/services" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                Διαχείριση Υπηρεσιών
+              </Link>
+            )}
+
             <span className="text-sm text-gray-600">
               {email} <span className="text-pink-500">({role})</span>
             </span>
