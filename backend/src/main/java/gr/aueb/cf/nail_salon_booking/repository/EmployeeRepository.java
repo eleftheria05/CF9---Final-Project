@@ -4,9 +4,11 @@ import gr.aueb.cf.nail_salon_booking.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     boolean existsByEmail(String email);
     List<Employee> findByIsActiveTrue();
     List<Employee> findBySalon_Id(Long salonId);
+    Optional<Employee> findByEmail(String email);
 }

@@ -38,6 +38,10 @@ public class Employee {
     @Column(nullable = false)
     private LocalDate hireDate;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
+
     @Column(nullable = false)
     private Boolean isActive;
 

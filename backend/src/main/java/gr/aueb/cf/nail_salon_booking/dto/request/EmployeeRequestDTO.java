@@ -42,4 +42,8 @@ public class EmployeeRequestDTO {
 
     @NotNull(message = "Salon is required")
     private Long salonId;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    private String password;
 }

@@ -7,10 +7,16 @@ import gr.aueb.cf.nail_salon_booking.exception.OperationNotAllowedException;
 import gr.aueb.cf.nail_salon_booking.exception.ResourceNotFoundException;
 import gr.aueb.cf.nail_salon_booking.mapper.EmployeeMapper;
 import gr.aueb.cf.nail_salon_booking.model.Employee;
+import gr.aueb.cf.nail_salon_booking.model.Role;
 import gr.aueb.cf.nail_salon_booking.model.Salon;
+import gr.aueb.cf.nail_salon_booking.model.User;
 import gr.aueb.cf.nail_salon_booking.repository.EmployeeRepository;
 import gr.aueb.cf.nail_salon_booking.repository.SalonRepository;
+import gr.aueb.cf.nail_salon_booking.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,12 +27,16 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper mapper;
     private final SalonRepository salonRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper mapper, SalonRepository salonRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper mapper, SalonRepository salonRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.mapper = mapper;
         this.salonRepository = salonRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<EmployeeResponseDTO> getAllEmployees() {
@@ -45,11 +55,22 @@ public class EmployeeService {
         if (employeeRepository.existsByEmail(dto.getEmail())) {
             throw new DuplicateResourceException("Email already in use: " + dto.getEmail());
         }
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new DuplicateResourceException("Email already in use: " + dto.getEmail());
+        }
+
         Salon salon = salonRepository.findById(dto.getSalonId())
                 .orElseThrow(() -> new ResourceNotFoundException("Salon not found with id: " + dto.getSalonId()));
 
+        User user = new User();
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setRole(Role.EMPLOYEE);
+        User savedUser = userRepository.save(user);
+
         Employee entity = mapper.toEntity(dto);
         entity.setSalon(salon);
+        entity.setUser(savedUser);
 
         Employee saved = employeeRepository.save(entity);
         return mapper.toResponseDTO(saved);
@@ -74,6 +95,13 @@ public class EmployeeService {
 
         Employee updated = employeeRepository.save(existing);
         return mapper.toResponseDTO(updated);
+    }
+
+    public EmployeeResponseDTO getCurrentEmployee() {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee profile not found"));
+        return mapper.toResponseDTO(employee);
     }
 
     public void deleteEmployee(Long id) {
