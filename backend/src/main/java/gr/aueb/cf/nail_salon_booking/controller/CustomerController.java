@@ -28,6 +28,11 @@ public class CustomerController {
         return ResponseEntity.ok(customers);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<CustomerResponseDTO> getCurrentCustomer() {
+        return ResponseEntity.ok(customerService.getCurrentCustomer());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponseDTO> getCustomerById(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));

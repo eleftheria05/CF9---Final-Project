@@ -61,6 +61,13 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
+    public CustomerResponseDTO getCurrentCustomer() {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Customer customer = customerRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer profile not found"));
+        return mapper.toResponseDTO(customer);
+    }
+
     private Customer findEntityById(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
