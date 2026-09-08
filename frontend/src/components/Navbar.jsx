@@ -20,12 +20,23 @@ function Navbar() {
       <div className="flex items-center gap-4">
         {token ? (
           <>
-            <Link to="/book" className="text-sm font-medium text-gray-700 hover:text-pink-600">
-              Κλείσε Ραντεβού
-            </Link>
-            <Link to="/my-appointments" className="text-sm font-medium    text-gray-700 hover:text-pink-600">
-                Τα Ραντεβού μου
-            </Link>
+            {role === 'CUSTOMER' && (
+              <>
+                <Link to="/book" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Κλείσε Ραντεβού
+                </Link>
+                <Link to="/my-appointments" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Τα Ραντεβού μου
+                </Link>
+              </>
+            )}
+
+            {role === 'EMPLOYEE' && (
+              <Link to="/employee-dashboard" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                Πίνακας Υπαλλήλου
+              </Link>
+            )}
+
             <span className="text-sm text-gray-600">
               {email} <span className="text-pink-500">({role})</span>
             </span>
@@ -38,10 +49,7 @@ function Navbar() {
           </>
         ) : (
           <>
-            <Link
-              to="/login"
-              className="text-sm font-medium text-gray-700 hover:text-pink-600"
-            >
+            <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-pink-600">
               Σύνδεση
             </Link>
             <Link

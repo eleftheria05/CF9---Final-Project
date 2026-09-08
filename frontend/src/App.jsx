@@ -7,6 +7,7 @@ import SalonDetailPage from './pages/SalonDetailPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import MyAppointmentsPage from './pages/MyAppointmentsPage';
 import BookAppointmentPage from './pages/BookAppointmentPage';
+import EmployeeDashboardPage from './pages/EmployeeDashboardPage';
 
 function App() {
   return (
@@ -30,6 +31,14 @@ function App() {
           element={
             <ProtectedRoute>
               <BookAppointmentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employee-dashboard"
+          element={
+            <ProtectedRoute>
+              <EmployeeDashboardPage />
             </ProtectedRoute>
           }
         />
