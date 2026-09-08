@@ -71,7 +71,7 @@ public class AppointmentService {
     }
 
     public List<AppointmentResponseDTO> getAllAppointments() {
-        return appointmentRepository.findAll()
+        return appointmentRepository.findAllByOrderByStartTimeAsc()
                 .stream()
                 .map(appointmentMapper::toResponseDTO)
                 .toList();
