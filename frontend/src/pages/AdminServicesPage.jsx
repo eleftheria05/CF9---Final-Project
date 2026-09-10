@@ -13,6 +13,7 @@ function AdminServicesPage() {
     durationMinutes: '',
   });
   const [formError, setFormError] = useState('');
+  const [editingId, setEditingId] = useState(null);
 
   const fetchServices = async () => {
     try {
@@ -33,21 +34,42 @@ function AdminServicesPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const resetForm = () => {
+    setFormData({ name: '', description: '', price: '', durationMinutes: '' });
+    setEditingId(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
 
+    const payload = {
+      ...formData,
+      price: Number(formData.price),
+      durationMinutes: Number(formData.durationMinutes),
+    };
+
     try {
-      await axiosInstance.post('/services', {
-        ...formData,
-        price: Number(formData.price),
-        durationMinutes: Number(formData.durationMinutes),
-      });
-      setFormData({ name: '', description: '', price: '', durationMinutes: '' });
+      if (editingId) {
+        await axiosInstance.put(`/services/${editingId}`, payload);
+      } else {
+        await axiosInstance.post('/services', payload);
+      }
+      resetForm();
       fetchServices();
     } catch (err) {
       setFormError('Ελέγξτε ότι όλα τα πεδία είναι σωστά συμπληρωμένα.');
     }
+  };
+
+  const handleEditClick = (service) => {
+    setEditingId(service.id);
+    setFormData({
+      name: service.name,
+      description: service.description || '',
+      price: service.price,
+      durationMinutes: service.durationMinutes,
+    });
   };
 
   const handleDelete = async (id) => {
@@ -69,11 +91,15 @@ function AdminServicesPage() {
         Διαχείριση Υπηρεσιών
       </h1>
 
-      {/* Φόρμα δημιουργίας */}
+      {/* Φόρμα δημιουργίας/επεξεργασίας */}
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded-xl p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4"
       >
+        <h2 className="sm:col-span-2 font-semibold text-gray-700">
+          {editingId ? 'Επεξεργασία Υπηρεσίας' : 'Νέα Υπηρεσία'}
+        </h2>
+
         <input
           type="text"
           name="name"
@@ -117,12 +143,24 @@ function AdminServicesPage() {
           <p className="text-red-500 text-sm sm:col-span-2 text-center">{formError}</p>
         )}
 
-        <button
-          type="submit"
-          className="sm:col-span-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg transition-colors"
-        >
-          Προσθήκη Υπηρεσίας
-        </button>
+        <div className="sm:col-span-2 flex gap-3">
+          <button
+            type="submit"
+            className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg transition-colors"
+          >
+            {editingId ? 'Αποθήκευση Αλλαγών' : 'Προσθήκη Υπηρεσίας'}
+          </button>
+
+          {editingId && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+            >
+              Ακύρωση
+            </button>
+          )}
+        </div>
       </form>
 
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -140,12 +178,20 @@ function AdminServicesPage() {
                 {service.durationMinutes} λεπτά — {service.price}€
               </p>
             </div>
-            <button
-              onClick={() => handleDelete(service.id)}
-              className="text-sm text-red-500 hover:text-red-600 font-medium"
-            >
-              Διαγραφή
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => handleEditClick(service)}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Επεξεργασία
+              </button>
+              <button
+                onClick={() => handleDelete(service.id)}
+                className="text-sm text-red-500 hover:text-red-600 font-medium"
+              >
+                Διαγραφή
+              </button>
+            </div>
           </div>
         ))}
       </div>
