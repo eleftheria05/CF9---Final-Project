@@ -17,4 +17,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
                                                   @Param("startTime") LocalDateTime startTime,
                                                   @Param("endTime") LocalDateTime endTime);
     List<Appointment> findAllByOrderByStartTimeAsc();
+    boolean existsByService_Id(Long serviceId);
 }

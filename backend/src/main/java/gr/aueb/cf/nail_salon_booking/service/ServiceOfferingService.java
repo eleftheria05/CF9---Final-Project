@@ -2,9 +2,11 @@ package gr.aueb.cf.nail_salon_booking.service;
 
 import gr.aueb.cf.nail_salon_booking.dto.request.ServiceOfferingRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.ServiceOfferingResponseDTO;
+import gr.aueb.cf.nail_salon_booking.exception.OperationNotAllowedException;
 import gr.aueb.cf.nail_salon_booking.exception.ResourceNotFoundException;
 import gr.aueb.cf.nail_salon_booking.mapper.ServiceOfferingMapper;
 import gr.aueb.cf.nail_salon_booking.model.ServiceOffering;
+import gr.aueb.cf.nail_salon_booking.repository.AppointmentRepository;
 import gr.aueb.cf.nail_salon_booking.repository.ServiceOfferingRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,12 @@ public class ServiceOfferingService {
 
     private final ServiceOfferingRepository serviceOfferingRepository;
     private final ServiceOfferingMapper mapper;
+    private final AppointmentRepository appointmentRepository;
 
-    public ServiceOfferingService(ServiceOfferingRepository serviceOfferingRepository, ServiceOfferingMapper mapper) {
+    public ServiceOfferingService(ServiceOfferingRepository serviceOfferingRepository, ServiceOfferingMapper mapper, AppointmentRepository appointmentRepository) {
         this.serviceOfferingRepository = serviceOfferingRepository;
         this.mapper = mapper;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public List<ServiceOfferingResponseDTO> getAllServices() {
@@ -52,6 +56,10 @@ public class ServiceOfferingService {
     }
 
     public void deleteService(Long id) {
+        findEntityById(id); // επιβεβαιώνει ότι υπάρχει, αλλιώς 404
+        if (appointmentRepository.existsByService_Id(id)) {
+            throw new OperationNotAllowedException("Cannot delete a service that has existing appointments.");
+        }
         serviceOfferingRepository.deleteById(id);
     }
 
