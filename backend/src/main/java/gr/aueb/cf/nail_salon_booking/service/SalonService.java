@@ -79,6 +79,13 @@ public class SalonService {
         employeeService.deactivateAllBySalon(id);
     }
 
+    public SalonResponseDTO reactivateSalon(Long id) {
+        Salon salon = findEntityById(id);
+        salon.setIsActive(true);
+        Salon saved = salonRepository.save(salon);
+        return salonMapper.toResponseDTO(saved);
+    }
+
     private Salon findEntityById(Long id) {
         return salonRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Salon not found with id: " + id));

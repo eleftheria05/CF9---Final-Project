@@ -17,7 +17,7 @@ function AdminSalonsPage() {
 
   const fetchSalons = async () => {
     try {
-      const response = await axiosInstance.get('/salons');
+      const response = await axiosInstance.get('/salons/all');
       setSalons(response.data);
     } catch (err) {
       setError('Δεν ήταν δυνατή η φόρτωση των καταστημάτων.');
@@ -52,11 +52,7 @@ function AdminSalonsPage() {
       resetForm();
       fetchSalons();
     } catch (err) {
-      if (err.response?.status === 409) {
-        setFormError('Το email χρησιμοποιείται ήδη από άλλο κατάστημα.');
-      } else {
-        setFormError('Ελέγξτε ότι όλα τα πεδία είναι σωστά συμπληρωμένα.');
-      }
+    setFormError(err.response?.data?.message || 'Κάτι πήγε στραβά.');
     }
   };
 
@@ -78,6 +74,15 @@ function AdminSalonsPage() {
       fetchSalons();
     } catch (err) {
       setError('Δεν ήταν δυνατή η απενεργοποίηση.');
+    }
+  };
+
+  const handleReactivate = async (id) => {
+    try {
+      await axiosInstance.patch(`/salons/${id}/reactivate`);
+      fetchSalons();
+    } catch (err) {
+      setError('Δεν ήταν δυνατή η ενεργοποίηση.');
     }
   };
 
@@ -167,7 +172,14 @@ function AdminSalonsPage() {
             className="bg-white shadow-sm rounded-lg p-4 flex items-center justify-between"
           >
             <div>
-              <p className="font-medium text-gray-800">{salon.name}</p>
+              <p className="font-medium text-gray-800">
+                {salon.name}
+                {!salon.isActive && (
+                  <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
+                    Ανενεργό
+                  </span>
+                )}
+              </p>
               <p className="text-sm text-gray-500">{salon.address}</p>
               <p className="text-sm text-gray-500">{salon.phoneNumber} · {salon.email}</p>
             </div>
@@ -178,12 +190,21 @@ function AdminSalonsPage() {
               >
                 Επεξεργασία
               </button>
-              <button
-                onClick={() => handleDelete(salon.id)}
-                className="text-sm text-red-500 hover:text-red-600 font-medium"
-              >
-                Απενεργοποίηση
-              </button>
+              {salon.isActive ? (
+                <button
+                  onClick={() => handleDelete(salon.id)}
+                  className="text-sm text-red-500 hover:text-red-600 font-medium"
+                >
+                  Απενεργοποίηση
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleReactivate(salon.id)}
+                  className="text-sm text-green-600 hover:text-green-700 font-medium"
+                >
+                  Ενεργοποίηση
+                </button>
+              )}
             </div>
           </div>
         ))}

@@ -32,7 +32,7 @@ public class SalonController {
     public ResponseEntity<List<SalonResponseDTO>> getAllSalonsIncludingInactive() {
         return ResponseEntity.ok(salonService.getAllSalonsIncludingInactive());
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<SalonResponseDTO> getSalonById(@PathVariable Long id) {
         SalonResponseDTO salon = salonService.getSalonById(id);
@@ -56,5 +56,11 @@ public class SalonController {
     public ResponseEntity<Void> deleteSalon(@PathVariable Long id) {
         salonService.deleteSalon(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/reactivate")
+    public ResponseEntity<SalonResponseDTO> reactivateSalon(@PathVariable Long id) {
+        return ResponseEntity.ok(salonService.reactivateSalon(id));
     }
 }
