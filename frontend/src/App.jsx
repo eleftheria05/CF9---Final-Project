@@ -9,6 +9,7 @@ import MyAppointmentsPage from './pages/MyAppointmentsPage';
 import BookAppointmentPage from './pages/BookAppointmentPage';
 import EmployeeDashboardPage from './pages/EmployeeDashboardPage';
 import AdminServicesPage from './pages/AdminServicesPage';
+import AdminSalonsPage from './pages/AdminSalonsPage';
 
 function App() {
   return (
@@ -50,6 +51,14 @@ function App() {
             <AdminServicesPage />
           </ProtectedRoute>
           }
+        />
+        <Route
+          path="/admin/salons"
+          element={
+          <ProtectedRoute>
+              <AdminSalonsPage />
+          </ProtectedRoute>
+          }     
         />
       </Routes>
     </div>
