@@ -33,6 +33,13 @@ public class SalonService {
                 .toList();
     }
 
+    public List<SalonResponseDTO> getAllSalonsIncludingInactive() {
+        return salonRepository.findAll()
+                .stream()
+                .map(salonMapper::toResponseDTO)
+                .toList();
+    }
+
     public SalonResponseDTO getSalonById(Long id) {
         Salon entity = findEntityById(id);
         return salonMapper.toResponseDTO(entity);

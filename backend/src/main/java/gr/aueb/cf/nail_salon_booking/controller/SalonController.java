@@ -27,6 +27,12 @@ public class SalonController {
         return ResponseEntity.ok(salons);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<List<SalonResponseDTO>> getAllSalonsIncludingInactive() {
+        return ResponseEntity.ok(salonService.getAllSalonsIncludingInactive());
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<SalonResponseDTO> getSalonById(@PathVariable Long id) {
         SalonResponseDTO salon = salonService.getSalonById(id);
