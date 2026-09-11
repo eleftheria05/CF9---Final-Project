@@ -9,8 +9,10 @@ import gr.aueb.cf.nail_salon_booking.mapper.CustomerMapper;
 import gr.aueb.cf.nail_salon_booking.model.Customer;
 import gr.aueb.cf.nail_salon_booking.repository.AppointmentRepository;
 import gr.aueb.cf.nail_salon_booking.repository.CustomerRepository;
+import gr.aueb.cf.nail_salon_booking.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,11 +23,13 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper mapper;
     private final AppointmentRepository appointmentRepository;
+    private final UserRepository userRepository;
 
-    public CustomerService(CustomerRepository customerRepository, CustomerMapper mapper, AppointmentRepository appointmentRepository) {
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper mapper, AppointmentRepository appointmentRepository, UserRepository userRepository) {
         this.customerRepository = customerRepository;
         this.mapper = mapper;
         this.appointmentRepository = appointmentRepository;
+        this.userRepository = userRepository;
     }
 
     public List<CustomerResponseDTO> getAllCustomers() {
@@ -61,12 +65,15 @@ public class CustomerService {
         return mapper.toResponseDTO(updated);
     }
 
+    @Transactional
     public void deleteCustomer(Long id) {
-        findEntityById(id); // επιβεβαιώνει ότι υπάρχει, αλλιώς 404
+        Customer customer = findEntityById(id);
         if (appointmentRepository.existsByCustomer_Id(id)) {
             throw new OperationNotAllowedException("Cannot delete a customer with existing appointments.");
         }
+        Long userId = customer.getUser().getId();
         customerRepository.deleteById(id);
+        userRepository.deleteById(userId);
     }
 
     public CustomerResponseDTO getCurrentCustomer() {
