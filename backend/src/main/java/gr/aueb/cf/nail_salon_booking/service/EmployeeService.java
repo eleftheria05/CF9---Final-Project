@@ -47,6 +47,13 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    public List<EmployeeResponseDTO> getAllEmployeesIncludingInactive() {
+        return employeeRepository.findAll()
+                .stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+    }
+
     public EmployeeResponseDTO getEmployeeById(Long id) {
         Employee entity = findEntityById(id);
         return mapper.toResponseDTO(entity);
@@ -116,6 +123,13 @@ public class EmployeeService {
         List<Employee> employees = employeeRepository.findBySalon_Id(salonId);
         employees.forEach(e -> e.setIsActive(false));
         employeeRepository.saveAll(employees);
+    }
+
+    public EmployeeResponseDTO reactivateEmployee(Long id) {
+        Employee employee = findEntityById(id);
+        employee.setIsActive(true);
+        Employee saved = employeeRepository.save(employee);
+        return mapper.toResponseDTO(saved);
     }
 
     private Employee findEntityById(Long id) {

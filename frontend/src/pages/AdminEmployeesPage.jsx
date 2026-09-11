@@ -23,7 +23,7 @@ function AdminEmployeesPage() {
   const fetchData = async () => {
     try {
       const [employeesRes, salonsRes] = await Promise.all([
-        axiosInstance.get('/employees'),
+        axiosInstance.get('/employees/all'),
         axiosInstance.get('/salons/all'),
       ]);
       setEmployees(employeesRes.data);
@@ -103,6 +103,15 @@ function AdminEmployeesPage() {
       fetchData();
     } catch (err) {
       setError('Δεν ήταν δυνατή η απενεργοποίηση.');
+    }
+  };
+
+  const handleReactivate = async (id) => {
+    try {
+        await axiosInstance.patch(`/employees/${id}/reactivate`);
+        fetchData();
+    } catch (err) {
+        setError('Δεν ήταν δυνατή η ενεργοποίηση.');
     }
   };
 
@@ -256,12 +265,19 @@ function AdminEmployeesPage() {
               >
                 Επεξεργασία
               </button>
-              {employee.isActive && (
+              {employee.isActive ? (
                 <button
-                  onClick={() => handleDelete(employee.id)}
-                  className="text-sm text-red-500 hover:text-red-600 font-medium"
+                    onClick={() => handleDelete(employee.id)}
+                    className="text-sm text-red-500 hover:text-red-600 font-medium"
                 >
-                  Απενεργοποίηση
+                    Απενεργοποίηση
+                </button>
+              ) : (
+               <button
+                    onClick={() => handleReactivate(employee.id)}
+                    className="text-sm text-green-600 hover:text-green-700 font-medium"
+                >
+                    Ενεργοποίηση
                 </button>
               )}
             </div>

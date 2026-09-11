@@ -28,6 +28,12 @@ public class EmployeeController {
         return ResponseEntity.ok(employees);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployeesIncludingInactive() {
+        return ResponseEntity.ok(employeeService.getAllEmployeesIncludingInactive());
+    }
+
     @GetMapping("/me")
     public ResponseEntity<EmployeeResponseDTO> getCurrentEmployee() {
         return ResponseEntity.ok(employeeService.getCurrentEmployee());
@@ -56,5 +62,11 @@ public class EmployeeController {
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/reactivate")
+    public ResponseEntity<EmployeeResponseDTO> reactivateEmployee(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.reactivateEmployee(id));
     }
 }
