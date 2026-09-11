@@ -28,6 +28,37 @@
 └── README.md
 ```
 
+## Αρχιτεκτονική Επισκόπηση
+
+Το backend ακολουθεί στρωματοποιημένη (layered) αρχιτεκτονική:
+
+```
+Controller → Service → Repository → Database
+↑ ↓
+DTOs Business Logic
+```
+
+- **Controller** — δέχεται HTTP requests, επιστρέφει HTTP responses. Δεν περιέχει business logic.
+- **Service** — όλη η επιχειρησιακή λογική (validation rules, cascade ενέργειες, ownership checks, state transitions).
+- **Repository** — πρόσβαση στη βάση δεδομένων μέσω Spring Data JPA.
+- **DTOs (Request/Response)** — τα entities δεν εκτίθενται ποτέ απευθείας στο API· κάθε endpoint επικοινωνεί μέσω ειδικών DTO κλάσεων, με **Mapper** κλάσεις να κάνουν τη μετατροπή.
+- **Exception Handling** — κεντρικός `GlobalExceptionHandler` μετατρέπει custom exceptions (π.χ. `ResourceNotFoundException`, `DuplicateResourceException`) σε καθαρά, ομοιόμορφα HTTP error responses.
+- **Security** — `JwtAuthFilter` ελέγχει κάθε εισερχόμενο request, `SecurityConfig` ορίζει ποια endpoints είναι δημόσια, και `@PreAuthorize` annotations περιορίζουν ενέργειες ανά ρόλο.
+
+Το frontend είναι δομημένο σε: `pages/` (πλήρεις οθόνες), `components/` (επαναχρησιμοποιήσιμα κομμάτια όπως το Navbar), `context/` (AuthContext για authentication state), `api/` (κεντρικό axios instance με JWT interceptor).
+
+## Entities & Σχέσεις
+
+| Entity | Περιγραφή | Σχέσεις |
+|---|---|---|
+| `User` | Λογαριασμός σύνδεσης (email, password, role) | `@OneToOne` με Customer ή Employee |
+| `Customer` | Προφίλ πελάτη | `@OneToOne` με User |
+| `Employee` | Προφίλ υπαλλήλου | `@OneToOne` με User, `@ManyToOne` με Salon |
+| `Salon` | Κατάστημα | `@OneToMany` Employees |
+| `ServiceOffering` | Προσφερόμενη υπηρεσία (π.χ. Manicure) | — |
+| `Appointment` | Ραντεβού | `@ManyToOne` με Customer, Employee, ServiceOffering |
+
+**Ρόλοι:** `CUSTOMER`, `EMPLOYEE`, `ADMIN` (enum `Role`, αποθηκεύεται στο `User`).
 
 ## Λειτουργίες ανά ρόλο
 
@@ -91,7 +122,7 @@ spring.datasource.password=${DB_PASSWORD:your_password}
 
 ### 2. Frontend
 
-Σε νέο τερματικό:
+Σε νέο Terminal:
 
 ```bash
 cd frontend
@@ -132,6 +163,21 @@ docker compose up --build
 
 Τα δεδομένα της βάσης παραμένουν μεταξύ επανεκκινήσεων μέσω Docker volume.
 
+## Environment Variables
+
+| Μεταβλητή | Περιγραφή | Πού ορίζεται | Default |
+|---|---|---|---|
+| `DB_HOST` | Hostname της βάσης | `application.properties` | `localhost` |
+| `DB_PORT` | Πόρτα της βάσης | `application.properties` | `5432` |
+| `DB_NAME` | Όνομα βάσης | `application.properties` | `nail_salon_db` |
+| `DB_USERNAME` | Χρήστης PostgreSQL | `application.properties` | `postgres` |
+| `DB_PASSWORD` | Password PostgreSQL | `application.properties` / `.env` | — |
+| `POSTGRES_PASSWORD` | Password για το Docker container της βάσης | `.env` (backend/) | — |
+| `jwt.secret` | Μυστικό κλειδί υπογραφής JWT | `application.properties` | — |
+| `jwt.expiration` | Διάρκεια ζωής token (ms) | `application.properties` | `86400000` (24ω) |
+
+Οι μεταβλητές `DB_*` έχουν fallback τιμές, ώστε η ίδια εφαρμογή να τρέχει χωρίς αλλαγές τόσο τοπικά όσο και μέσω Docker (βλ. `docker-compose.yml` για τις τιμές που περνιούνται στο container).
+
 ---
 
 ## API Τεκμηρίωση (Swagger)
@@ -163,4 +209,14 @@ http://localhost:8080/swagger-ui.html
 
 ## Testing
 
-Οι λειτουργίες του API έχουν δοκιμαστεί με Postman και μέσω του Swagger UI, καλύπτοντας πλήρη CRUD ροές, role-based access control, και error handling για κάθε entity.
+Οι λειτουργίες του API έχουν δοκιμαστεί μη-αυτόματα μέσω Postman και Swagger UI, καλύπτοντας:
+- Πλήρη CRUD ροές για κάθε entity
+- Role-based access control (401/403 σε μη επιτρεπτές ενέργειες)
+- Business rule validation (409 σε duplicate email, overlapping appointments, κλπ)
+- End-to-end ροές μέσω του React frontend, για κάθε ρόλο (CUSTOMER, EMPLOYEE, ADMIN)
+
+## Γνωστοί Περιορισμοί
+
+- Δεν υπάρχει έλεγχος ωρών λειτουργίας καταστήματος (business hours) κατά την κράτηση ραντεβού.
+- Η επανενεργοποίηση ενός Salon δεν επανενεργοποιεί αυτόματα τους Employees του (γίνεται χειροκίνητα, σκόπιμα, για λόγους ασφάλειας).
+- Δεν έχουν προστεθεί automated unit/integration tests (JUnit/Mockito) — η εφαρμογή έχει δοκιμαστεί μη-αυτόματα.
