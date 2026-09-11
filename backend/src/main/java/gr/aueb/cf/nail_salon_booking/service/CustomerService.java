@@ -3,9 +3,11 @@ package gr.aueb.cf.nail_salon_booking.service;
 import gr.aueb.cf.nail_salon_booking.dto.request.CustomerRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.CustomerResponseDTO;
 import gr.aueb.cf.nail_salon_booking.exception.AccessDeniedException;
+import gr.aueb.cf.nail_salon_booking.exception.OperationNotAllowedException;
 import gr.aueb.cf.nail_salon_booking.exception.ResourceNotFoundException;
 import gr.aueb.cf.nail_salon_booking.mapper.CustomerMapper;
 import gr.aueb.cf.nail_salon_booking.model.Customer;
+import gr.aueb.cf.nail_salon_booking.repository.AppointmentRepository;
 import gr.aueb.cf.nail_salon_booking.repository.CustomerRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,12 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerMapper mapper;
+    private final AppointmentRepository appointmentRepository;
 
-    public CustomerService(CustomerRepository customerRepository, CustomerMapper mapper) {
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper mapper, AppointmentRepository appointmentRepository) {
         this.customerRepository = customerRepository;
         this.mapper = mapper;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public List<CustomerResponseDTO> getAllCustomers() {
@@ -58,6 +62,10 @@ public class CustomerService {
     }
 
     public void deleteCustomer(Long id) {
+        findEntityById(id); // επιβεβαιώνει ότι υπάρχει, αλλιώς 404
+        if (appointmentRepository.existsByCustomer_Id(id)) {
+            throw new OperationNotAllowedException("Cannot delete a customer with existing appointments.");
+        }
         customerRepository.deleteById(id);
     }
 

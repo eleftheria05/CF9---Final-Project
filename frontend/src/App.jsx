@@ -11,6 +11,7 @@ import EmployeeDashboardPage from './pages/EmployeeDashboardPage';
 import AdminServicesPage from './pages/AdminServicesPage';
 import AdminSalonsPage from './pages/AdminSalonsPage';
 import AdminEmployeesPage from './pages/AdminEmployeesPage';
+import AdminCustomersPage from './pages/AdminCustomersPage';
 
 function App() {
   return (
@@ -67,7 +68,16 @@ function App() {
           <ProtectedRoute>
             <AdminEmployeesPage />
           </ProtectedRoute>} />
+        <Route
+          path="/admin/customers"
+          element={
+          <ProtectedRoute>
+            <AdminCustomersPage />
+          </ProtectedRoute>
+          }
+        />
       </Routes>
+      
     </div>
   )
 }

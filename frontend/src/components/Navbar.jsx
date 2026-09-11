@@ -48,6 +48,9 @@ function Navbar() {
                <Link to="/admin/services" className="text-sm font-medium text-gray-700 hover:text-pink-600">
                 Διαχείριση Υπηρεσιών
               </Link>
+              <Link to="/admin/customers" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                Πελάτες
+              </Link>
             </>
             )}
 
