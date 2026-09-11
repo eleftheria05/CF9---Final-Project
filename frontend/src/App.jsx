@@ -10,6 +10,7 @@ import BookAppointmentPage from './pages/BookAppointmentPage';
 import EmployeeDashboardPage from './pages/EmployeeDashboardPage';
 import AdminServicesPage from './pages/AdminServicesPage';
 import AdminSalonsPage from './pages/AdminSalonsPage';
+import AdminEmployeesPage from './pages/AdminEmployeesPage';
 
 function App() {
   return (
@@ -60,6 +61,12 @@ function App() {
           </ProtectedRoute>
           }     
         />
+        <Route 
+          path="/admin/employees" 
+          element={
+          <ProtectedRoute>
+            <AdminEmployeesPage />
+          </ProtectedRoute>} />
       </Routes>
     </div>
   )

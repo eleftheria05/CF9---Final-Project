@@ -39,11 +39,14 @@ function Navbar() {
 
             {role === 'ADMIN' && (
             <>
-              <Link to="/admin/services" className="text-sm font-medium text-gray-700 hover:text-pink-600">
-                Διαχείριση Υπηρεσιών
-              </Link>
               <Link to="/admin/salons" className="text-sm font-medium text-gray-700 hover:text-pink-600">
                 Καταστήματα
+              </Link>
+              <Link to="/admin/employees" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                Υπάλληλοι
+              </Link>
+               <Link to="/admin/services" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                Διαχείριση Υπηρεσιών
               </Link>
             </>
             )}
