@@ -1,6 +1,7 @@
 package gr.aueb.cf.nail_salon_booking.service;
 
 import gr.aueb.cf.nail_salon_booking.dto.request.EmployeeRequestDTO;
+import gr.aueb.cf.nail_salon_booking.dto.request.EmployeeUpdateDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.EmployeeResponseDTO;
 import gr.aueb.cf.nail_salon_booking.exception.DuplicateResourceException;
 import gr.aueb.cf.nail_salon_booking.exception.OperationNotAllowedException;
@@ -76,7 +77,7 @@ public class EmployeeService {
         return mapper.toResponseDTO(saved);
     }
 
-    public EmployeeResponseDTO updateEmployee(Long id, EmployeeRequestDTO dto) {
+    public EmployeeResponseDTO updateEmployee(Long id, EmployeeUpdateDTO dto) {
         Employee existing = findEntityById(id);
         if (!existing.getIsActive()) {
             throw new OperationNotAllowedException("Cannot update an inactive employee with id: " + id);

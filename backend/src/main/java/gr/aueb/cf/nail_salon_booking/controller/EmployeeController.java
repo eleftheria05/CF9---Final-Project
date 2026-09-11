@@ -1,6 +1,7 @@
 package gr.aueb.cf.nail_salon_booking.controller;
 
 import gr.aueb.cf.nail_salon_booking.dto.request.EmployeeRequestDTO;
+import gr.aueb.cf.nail_salon_booking.dto.request.EmployeeUpdateDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.EmployeeResponseDTO;
 import gr.aueb.cf.nail_salon_booking.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -46,7 +47,7 @@ public class EmployeeController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeResponseDTO> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeRequestDTO dto) {
+    public ResponseEntity<EmployeeResponseDTO> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeUpdateDTO dto) {
         return ResponseEntity.ok(employeeService.updateEmployee(id, dto));
     }
 
