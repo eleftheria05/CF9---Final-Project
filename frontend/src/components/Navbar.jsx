@@ -28,6 +28,9 @@ function Navbar() {
                 <Link to="/my-appointments" className="text-sm font-medium text-gray-700 hover:text-pink-600">
                   Τα Ραντεβού μου
                 </Link>
+                <Link to="/my-profile" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Το Προφίλ μου
+                </Link>
               </>
             )}
 

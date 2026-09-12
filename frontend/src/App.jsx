@@ -13,6 +13,7 @@ import AdminSalonsPage from './pages/AdminSalonsPage';
 import AdminEmployeesPage from './pages/AdminEmployeesPage';
 import AdminCustomersPage from './pages/AdminCustomersPage';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
+import MyProfilePage from './pages/MyProfilePage';
 
 function App() {
   return (
@@ -82,6 +83,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
               <AdminAppointmentsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-profile"
+          element={
+            <ProtectedRoute allowedRoles={['CUSTOMER']}>
+              <MyProfilePage />
             </ProtectedRoute>
           }
         />
