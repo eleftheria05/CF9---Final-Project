@@ -12,6 +12,7 @@ import AdminServicesPage from './pages/AdminServicesPage';
 import AdminSalonsPage from './pages/AdminSalonsPage';
 import AdminEmployeesPage from './pages/AdminEmployeesPage';
 import AdminCustomersPage from './pages/AdminCustomersPage';
+import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
 
 function App() {
   return (
@@ -74,6 +75,14 @@ function App() {
           <ProtectedRoute allowedRoles={['ADMIN']}>
             <AdminCustomersPage />
           </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/appointments"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminAppointmentsPage />
+            </ProtectedRoute>
           }
         />
       </Routes>
