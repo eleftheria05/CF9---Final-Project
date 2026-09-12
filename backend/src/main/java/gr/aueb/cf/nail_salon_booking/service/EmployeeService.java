@@ -17,6 +17,7 @@ import gr.aueb.cf.nail_salon_booking.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -30,14 +31,17 @@ public class EmployeeService {
     private final SalonRepository salonRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AppointmentService appointmentService;
 
 
-    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper mapper, SalonRepository salonRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper mapper,
+                           SalonRepository salonRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, AppointmentService appointmentService) {
         this.employeeRepository = employeeRepository;
         this.mapper = mapper;
         this.salonRepository = salonRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.appointmentService = appointmentService;
     }
 
     public List<EmployeeResponseDTO> getAllEmployees() {
@@ -112,16 +116,22 @@ public class EmployeeService {
         return mapper.toResponseDTO(employee);
     }
 
+    @Transactional
     public void deleteEmployee(Long id) {
         Employee existing = findEntityById(id);
         existing.setIsActive(false);
         employeeRepository.save(existing);
+        appointmentService.cancelActiveAppointmentsByEmployee(id);
     }
 
     // Deactivate all employees associated with a specific salon that is now deactivated.
+    @Transactional
     public void deactivateAllBySalon(Long salonId) {
         List<Employee> employees = employeeRepository.findBySalon_Id(salonId);
-        employees.forEach(e -> e.setIsActive(false));
+        employees.forEach(e -> {
+            e.setIsActive(false);
+            appointmentService.cancelActiveAppointmentsByEmployee(e.getId());
+        });
         employeeRepository.saveAll(employees);
     }
 

@@ -117,6 +117,13 @@ public class AppointmentService {
         return appointmentMapper.toResponseDTO(updated);
     }
 
+    public void cancelActiveAppointmentsByEmployee(Long employeeId) {
+        List<Appointment> appointments = appointmentRepository.findByEmployee_IdAndStatusIn(
+                employeeId, List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED));
+        appointments.forEach(a -> a.setStatus(AppointmentStatus.CANCELLED));
+        appointmentRepository.saveAll(appointments);
+    }
+
     private void checkOwnershipOrAdmin(Customer customer) {
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()

@@ -1,6 +1,7 @@
 package gr.aueb.cf.nail_salon_booking.repository;
 
 import gr.aueb.cf.nail_salon_booking.model.Appointment;
+import gr.aueb.cf.nail_salon_booking.model.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +20,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findAllByOrderByStartTimeAsc();
     boolean existsByService_Id(Long serviceId);
     boolean existsByCustomer_Id(Long customerId);
+    List<Appointment> findByEmployee_IdAndStatusIn(Long employeeId, List<AppointmentStatus> statuses);
 }
