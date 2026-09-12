@@ -23,7 +23,7 @@ function LoginPage() {
       login(token, role, userEmail);
       navigate('/');
     } catch (err) {
-      setError('Λάθος email ή κωδικός.');
+      setError(err.response?.data?.message || 'Λάθος email ή κωδικός.');
     }
   };
 

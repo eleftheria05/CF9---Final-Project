@@ -5,10 +5,13 @@ import gr.aueb.cf.nail_salon_booking.dto.request.RegisterRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.AuthResponseDTO;
 import gr.aueb.cf.nail_salon_booking.exception.BadCredentialsException;
 import gr.aueb.cf.nail_salon_booking.exception.DuplicateResourceException;
+import gr.aueb.cf.nail_salon_booking.exception.OperationNotAllowedException;
 import gr.aueb.cf.nail_salon_booking.model.Customer;
+import gr.aueb.cf.nail_salon_booking.model.Employee;
 import gr.aueb.cf.nail_salon_booking.model.Role;
 import gr.aueb.cf.nail_salon_booking.model.User;
 import gr.aueb.cf.nail_salon_booking.repository.CustomerRepository;
+import gr.aueb.cf.nail_salon_booking.repository.EmployeeRepository;
 import gr.aueb.cf.nail_salon_booking.repository.UserRepository;
 import gr.aueb.cf.nail_salon_booking.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,12 +25,15 @@ public class AuthService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmployeeRepository employeeRepository;
 
-    public AuthService(UserRepository userRepository, CustomerRepository customerRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, CustomerRepository customerRepository,
+                       PasswordEncoder passwordEncoder, JwtService jwtService, EmployeeRepository employeeRepository) {
         this.userRepository = userRepository;
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.employeeRepository = employeeRepository;
     }
 
     @Transactional
@@ -60,6 +66,14 @@ public class AuthService {
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid email or password");
+        }
+
+        if (user.getRole() == Role.EMPLOYEE) {
+            Employee employee = employeeRepository.findByEmail(user.getEmail())
+                    .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+            if (!employee.getIsActive()) {
+                throw new OperationNotAllowedException("This employee account has been deactivated. Contact an administrator.");
+            }
         }
 
         String token = jwtService.generateToken(user.getEmail());
