@@ -1,5 +1,6 @@
 package gr.aueb.cf.nail_salon_booking.controller;
 
+import gr.aueb.cf.nail_salon_booking.dto.request.ChangePasswordRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.request.LoginRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.request.RegisterRequestDTO;
 import gr.aueb.cf.nail_salon_booking.dto.response.AuthResponseDTO;
@@ -30,5 +31,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(authService.login(dto));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequestDTO dto) {
+        authService.changePassword(dto);
+        return ResponseEntity.noContent().build();
     }
 }
