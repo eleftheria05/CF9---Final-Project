@@ -46,6 +46,7 @@ function MyProfilePage() {
     try {
       await axiosInstance.put(`/customers/${customerId}`, formData);
       setSuccess('Το προφίλ ενημερώθηκε επιτυχώς!');
+      fetchProfile();
     } catch (err) {
       setError(err.response?.data?.message || 'Δεν ήταν δυνατή η ενημέρωση.');
     }
