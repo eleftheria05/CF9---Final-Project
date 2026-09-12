@@ -14,6 +14,7 @@ import AdminEmployeesPage from './pages/AdminEmployeesPage';
 import AdminCustomersPage from './pages/AdminCustomersPage';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
 import MyProfilePage from './pages/MyProfilePage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function App() {
   return (
@@ -91,6 +92,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['CUSTOMER']}>
               <MyProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
             </ProtectedRoute>
           }
         />

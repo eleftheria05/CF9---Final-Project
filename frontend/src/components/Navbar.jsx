@@ -41,24 +41,28 @@ function Navbar() {
             )}
 
             {role === 'ADMIN' && (
-            <>
-              <Link to="/admin/salons" className="text-sm font-medium text-gray-700 hover:text-pink-600">
-                Καταστήματα
-              </Link>
-              <Link to="/admin/employees" className="text-sm font-medium text-gray-700 hover:text-pink-600">
-                Υπάλληλοι
-              </Link>
-               <Link to="/admin/services" className="text-sm font-medium text-gray-700 hover:text-pink-600">
-                Υπηρεσίες
-              </Link>
-              <Link to="/admin/customers" className="text-sm font-medium text-gray-700 hover:text-pink-600">
-                Πελάτες
-              </Link>
-              <Link to="/admin/appointments" className="text-sm font-medium text-gray-700 hover:text-pink-600">
-                Ραντεβού
-              </Link>
-            </>
+              <>
+                <Link to="/admin/services" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Διαχείριση Υπηρεσιών
+                </Link>
+                <Link to="/admin/salons" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Καταστήματα
+                </Link>
+                <Link to="/admin/employees" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Υπάλληλοι
+                </Link>
+                <Link to="/admin/customers" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Πελάτες
+                </Link>
+                <Link to="/admin/appointments" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                  Ραντεβού
+                </Link>
+              </>
             )}
+
+            <Link to="/change-password" className="text-sm font-medium text-gray-700 hover:text-pink-600">
+              Αλλαγή Κωδικού
+            </Link>
 
             <span className="text-sm text-gray-600">
               {email} <span className="text-pink-500">({role})</span>
