@@ -102,9 +102,11 @@ public class EmployeeService {
             if (employeeRepository.existsByEmail(dto.getEmail()) || userRepository.existsByEmail(dto.getEmail())) {
                 throw new DuplicateResourceException("Email already in use: " + dto.getEmail());
             }
-            User user = existing.getUser();
-            user.setEmail(dto.getEmail());
-            userRepository.save(user);
+            if (existing.getUser() != null) {
+                User user = existing.getUser();
+                user.setEmail(dto.getEmail());
+                userRepository.save(user);
+            }
         }
 
         existing.setFirstName(dto.getFirstName());
