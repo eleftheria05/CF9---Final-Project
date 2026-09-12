@@ -88,6 +88,7 @@ public class EmployeeService {
         return mapper.toResponseDTO(saved);
     }
 
+    @Transactional
     public EmployeeResponseDTO updateEmployee(Long id, EmployeeUpdateDTO dto) {
         Employee existing = findEntityById(id);
         if (!existing.getIsActive()) {
@@ -96,6 +97,15 @@ public class EmployeeService {
 
         Salon salon = salonRepository.findById(dto.getSalonId())
                 .orElseThrow(() -> new ResourceNotFoundException("Salon not found with id: " + dto.getSalonId()));
+
+        if (!existing.getEmail().equals(dto.getEmail())) {
+            if (employeeRepository.existsByEmail(dto.getEmail()) || userRepository.existsByEmail(dto.getEmail())) {
+                throw new DuplicateResourceException("Email already in use: " + dto.getEmail());
+            }
+            User user = existing.getUser();
+            user.setEmail(dto.getEmail());
+            userRepository.save(user);
+        }
 
         existing.setFirstName(dto.getFirstName());
         existing.setLastName(dto.getLastName());
