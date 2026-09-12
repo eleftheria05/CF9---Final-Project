@@ -73,13 +73,13 @@ function AdminServicesPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Θέλετε σίγουρα να διαγράψετε αυτή την υπηρεσία;')) return;
+    if (!window.confirm('Θέλετε σίγουρα να διαγράψετε αυτή την υπηρεσία;'))     return;
 
     try {
       await axiosInstance.delete(`/services/${id}`);
       fetchServices();
     } catch (err) {
-      setError('Δεν ήταν δυνατή η διαγραφή.');
+      setError(err.response?.data?.message || 'Δεν ήταν δυνατή η διαγραφή.');
     }
   };
 

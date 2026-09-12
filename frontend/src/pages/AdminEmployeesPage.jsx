@@ -102,7 +102,7 @@ function AdminEmployeesPage() {
       await axiosInstance.delete(`/employees/${id}`);
       fetchData();
     } catch (err) {
-      setError('Δεν ήταν δυνατή η απενεργοποίηση.');
+      setError(err.response?.data?.message || 'Δεν ήταν δυνατή η απενεργοποίηση.');
     }
   };
 
@@ -111,7 +111,7 @@ function AdminEmployeesPage() {
         await axiosInstance.patch(`/employees/${id}/reactivate`);
         fetchData();
     } catch (err) {
-        setError('Δεν ήταν δυνατή η ενεργοποίηση.');
+        setError(err.response?.data?.message || 'Δεν ήταν δυνατή η ενεργοποίηση');
     }
   };
 

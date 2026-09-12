@@ -33,7 +33,7 @@ function EmployeeDashboardPage() {
       await axiosInstance.patch(`/appointments/${id}/confirm`);
       fetchMyAppointments();
     } catch (err) {
-      setActionError('Δεν ήταν δυνατή η επιβεβαίωση.');
+      setActionError(err.response?.data?.message || 'Δεν ήταν δυνατή η επιβεβαίωση.');
     }
   };
 
@@ -43,7 +43,7 @@ function EmployeeDashboardPage() {
       await axiosInstance.patch(`/appointments/${id}/complete`);
       fetchMyAppointments();
     } catch (err) {
-      setActionError('Δεν ήταν δυνατή η ολοκλήρωση.');
+      setActionError(err.response?.data?.message || 'Δεν ήταν δυνατή η ολοκλήρωση.');
     }
   };
 

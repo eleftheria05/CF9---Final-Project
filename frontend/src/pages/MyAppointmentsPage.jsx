@@ -33,7 +33,7 @@ function MyAppointmentsPage() {
       await axiosInstance.patch(`/appointments/${id}/cancel`);
       fetchMyAppointments(); // ξαναφόρτωσε τη λίστα με την ενημερωμένη κατάσταση
     } catch (err) {
-      setActionError('Δεν ήταν δυνατή η ακύρωση του ραντεβού.');
+      setActionError(err.response?.data?.message || 'Δεν ήταν δυνατή η ακύρωση του ραντεβού.');
     }
   };
 

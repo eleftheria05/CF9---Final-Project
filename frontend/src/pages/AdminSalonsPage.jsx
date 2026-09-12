@@ -73,7 +73,7 @@ function AdminSalonsPage() {
       await axiosInstance.delete(`/salons/${id}`);
       fetchSalons();
     } catch (err) {
-      setError('Δεν ήταν δυνατή η απενεργοποίηση.');
+      setError(err.response?.data?.message || 'Δεν ήταν δυνατή η απενεργοποίηση.');
     }
   };
 
@@ -82,7 +82,7 @@ function AdminSalonsPage() {
       await axiosInstance.patch(`/salons/${id}/reactivate`);
       fetchSalons();
     } catch (err) {
-      setError('Δεν ήταν δυνατή η ενεργοποίηση.');
+      setError(err.response?.data?.message || 'Δεν ήταν δυνατή η ενεργοποίηση.');
     }
   };
 
